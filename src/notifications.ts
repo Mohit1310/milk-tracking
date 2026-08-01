@@ -1,5 +1,18 @@
-import * as Notifications from 'expo-notifications';
 import { Linking, Platform } from 'react-native';
+import { AndroidImportance } from 'expo-notifications/build/NotificationChannelManager.types';
+import {
+  SchedulableTriggerInputTypes,
+  type NotificationTriggerInput,
+} from 'expo-notifications/build/Notifications.types';
+import {
+  IosAuthorizationStatus,
+  type NotificationPermissionsStatus,
+} from 'expo-notifications/build/NotificationPermissions.types';
+import { getPermissionsAsync, requestPermissionsAsync } from 'expo-notifications/build/NotificationPermissions';
+import { setNotificationChannelAsync } from 'expo-notifications/build/setNotificationChannelAsync';
+import { cancelScheduledNotificationAsync } from 'expo-notifications/build/cancelScheduledNotificationAsync';
+import { scheduleNotificationAsync } from 'expo-notifications/build/scheduleNotificationAsync';
+import { setNotificationHandler } from 'expo-notifications/build/NotificationsHandler';
 
 const MILK_REMINDER_CHANNEL_ID = 'milk-reminders';
 
@@ -16,19 +29,18 @@ export type ScheduleDailyMilkNotificationOptions = {
 };
 
 function normalizePermission(
-  permission: Notifications.NotificationPermissionsStatus,
+  permission: NotificationPermissionsStatus,
 ): NotificationPermissionState {
   const iosStatus = permission.ios?.status;
   const granted =
     permission.granted ||
-    iosStatus === Notifications.IosAuthorizationStatus.PROVISIONAL ||
-    iosStatus === Notifications.IosAuthorizationStatus.EPHEMERAL;
+    iosStatus === IosAuthorizationStatus.PROVISIONAL ||
+    iosStatus === IosAuthorizationStatus.EPHEMERAL;
 
   return {
     status: granted
       ? 'granted'
-      : permission.status === 'denied' ||
-          iosStatus === Notifications.IosAuthorizationStatus.DENIED
+      : permission.status === 'denied' || iosStatus === IosAuthorizationStatus.DENIED
         ? 'denied'
         : 'undetermined',
     canAskAgain: permission.canAskAgain,
@@ -47,18 +59,28 @@ function parseTime(time: string): { hour: number; minute: number } {
   return { hour, minute };
 }
 
-export async function ensureMilkReminderChannel(): Promise<void> {
-  if (Platform.OS !== 'android') return;
+export async function ensureMilkReminderChannel(): Promise<boolean> {
+  if (Platform.OS !== 'android') return false;
 
-  await Notifications.setNotificationChannelAsync(MILK_REMINDER_CHANNEL_ID, {
-    name: 'Milk reminders',
-    description: 'Daily reminders to review the automatically recorded milk delivery.',
-    importance: Notifications.AndroidImportance.DEFAULT,
-  });
+  try {
+    const channel = await setNotificationChannelAsync(MILK_REMINDER_CHANNEL_ID, {
+      name: 'Milk reminders',
+      description: 'Daily reminders to review the automatically recorded milk delivery.',
+      importance: AndroidImportance.DEFAULT,
+    });
+
+    return channel !== null;
+  } catch {
+    // Expo Go's Android runtime can expose the notifications module without
+    // exposing its channel provider. Local notifications still work there,
+    // but they must use Expo's fallback channel instead of a custom channel.
+    console.warn('Custom Android notification channel is unavailable; using the fallback channel.');
+    return false;
+  }
 }
 
 export async function getNotificationPermissionState(): Promise<NotificationPermissionState> {
-  return normalizePermission(await Notifications.getPermissionsAsync());
+  return normalizePermission(await getPermissionsAsync());
 }
 
 export async function requestNotificationPermission(): Promise<NotificationPermissionState> {
@@ -68,7 +90,7 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
   if (current.status === 'granted' || !current.canAskAgain) return current;
 
   return normalizePermission(
-    await Notifications.requestPermissionsAsync({
+    await requestPermissionsAsync({
       ios: { allowAlert: true, allowSound: true },
     }),
   );
@@ -92,7 +114,7 @@ export async function cancelDailyMilkNotification(
   identifier?: string | null,
 ): Promise<void> {
   if (!identifier) return;
-  await Notifications.cancelScheduledNotificationAsync(identifier);
+  await cancelScheduledNotificationAsync(identifier);
 }
 
 export async function scheduleDailyMilkNotification({
@@ -109,25 +131,25 @@ export async function scheduleDailyMilkNotification({
   }
 
   const { hour, minute } = parseTime(time);
-  await ensureMilkReminderChannel();
+  const channelAvailable = await ensureMilkReminderChannel();
   await cancelDailyMilkNotification(existingIdentifier);
 
-  const trigger: Notifications.NotificationTriggerInput =
+  const trigger: NotificationTriggerInput =
     Platform.OS === 'android'
       ? {
-          type: Notifications.SchedulableTriggerInputTypes.DAILY,
+          type: SchedulableTriggerInputTypes.DAILY,
           hour,
           minute,
-          channelId: MILK_REMINDER_CHANNEL_ID,
+          ...(channelAvailable ? { channelId: MILK_REMINDER_CHANNEL_ID } : {}),
         }
       : {
-          type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
+          type: SchedulableTriggerInputTypes.CALENDAR,
           hour,
           minute,
           repeats: true,
         };
 
-  return Notifications.scheduleNotificationAsync({
+  return scheduleNotificationAsync({
     content: {
       title: 'Milk delivery recorded',
       body: "Today's milk entry is ready. Tap to review or edit.",
@@ -138,7 +160,7 @@ export async function scheduleDailyMilkNotification({
 }
 
 export function configureForegroundNotificationPresentation(): void {
-  Notifications.setNotificationHandler({
+  setNotificationHandler({
     handleNotification: async () => ({
       shouldPlaySound: false,
       shouldSetBadge: false,
