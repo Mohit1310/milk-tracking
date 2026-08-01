@@ -8,7 +8,7 @@ import {
   type DeliveryRule,
   type MilkType,
   type MonthlyDelivery,
-} from '../data/milkDatabase';
+} from './data/milkDatabase';
 import {
   cancelDailyMilkNotification,
   configureForegroundNotificationPresentation,
@@ -17,7 +17,7 @@ import {
   scheduleDailyMilkNotification,
   openNotificationSettingsIfDenied,
   type NotificationPermissionState,
-} from '../notifications';
+} from './notifications';
 import {
   clearOverride,
   getDeliveryDay,
@@ -29,7 +29,7 @@ import {
   saveOverride,
   saveRule,
   saveSettings,
-} from '../data/milkDatabase';
+} from './data/milkDatabase';
 
 export type MilkTrackerSetup = {
   arrivalHour: number;

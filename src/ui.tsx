@@ -52,6 +52,7 @@ export interface MilkTrackerViewProps {
   rules?: DeliveryRule[];
   today: DailyDelivery | null;
   month: MonthlyDelivery | null;
+  route?: MilkTrackerScreen;
   loading?: boolean;
   notificationPermission?: NotificationPermissionState;
   onSaveSetup: (input: PlanSaveInput) => void | Promise<void>;
@@ -77,7 +78,7 @@ type PlanDraft = {
   priceRupees: string;
 };
 
-type Tab = "today" | "history" | "settings";
+export type MilkTrackerScreen = "today" | "history" | "settings";
 
 const FALLBACK_TYPES: MilkType[] = [
   { id: "cow", name: "Cow's milk" },
@@ -807,6 +808,7 @@ export function MilkTrackerView({
   rules = [],
   today,
   month,
+  route = "today",
   loading = false,
   notificationPermission,
   onSaveSetup,
@@ -816,7 +818,6 @@ export function MilkTrackerView({
   onRequestNotifications,
   onOpenNotificationSettings,
 }: MilkTrackerViewProps) {
-  const [tab, setTab] = useState<Tab>("today");
   const [editingDate, setEditingDate] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<PlanDraft[]>(() =>
     defaultDrafts(milkTypes, rules),
@@ -883,7 +884,7 @@ export function MilkTrackerView({
   }
 
   const screen =
-    tab === "today" ? (
+    route === "today" ? (
       <TodayScreen
         editing={Boolean(editingDelivery && editingDate === today?.date)}
         onCancelEdit={() => setEditingDate(null)}
@@ -896,7 +897,7 @@ export function MilkTrackerView({
         onSaveOverrides={onSaveOverrides}
         today={today}
       />
-    ) : tab === "history" ? (
+    ) : route === "history" ? (
       editingDelivery ? (
         <DeliveryEditor
           delivery={editingDelivery}
@@ -939,27 +940,6 @@ export function MilkTrackerView({
       >
         {screen}
       </ScrollView>
-      <View style={styles.tabBar}>
-        {(["today", "history", "settings"] as Tab[]).map((item) => (
-          <Pressable
-            key={item}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: tab === item }}
-            accessibilityLabel={item}
-            onPress={() => {
-              setTab(item);
-              setEditingDate(null);
-            }}
-            style={styles.tab}
-          >
-            <Text
-              style={[styles.tabText, tab === item && styles.tabTextActive]}
-            >
-              {item[0].toUpperCase() + item.slice(1)}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
     </SafeAreaView>
   );
 }
@@ -1229,15 +1209,4 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 18,
   },
-  tabBar: {
-    backgroundColor: colors.card,
-    borderTopColor: colors.line,
-    borderTopWidth: 1,
-    flexDirection: "row",
-    paddingBottom: 8,
-    paddingTop: 6,
-  },
-  tab: { alignItems: "center", flex: 1, paddingVertical: 11 },
-  tabText: { color: colors.muted, fontSize: 12, fontWeight: "700" },
-  tabTextActive: { color: colors.accent },
 });
