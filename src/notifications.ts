@@ -1,18 +1,5 @@
+import * as Notifications from 'expo-notifications';
 import { Linking, Platform } from 'react-native';
-import { AndroidImportance } from 'expo-notifications/build/NotificationChannelManager.types';
-import {
-  SchedulableTriggerInputTypes,
-  type NotificationTriggerInput,
-} from 'expo-notifications/build/Notifications.types';
-import {
-  IosAuthorizationStatus,
-  type NotificationPermissionsStatus,
-} from 'expo-notifications/build/NotificationPermissions.types';
-import { getPermissionsAsync, requestPermissionsAsync } from 'expo-notifications/build/NotificationPermissions';
-import { setNotificationChannelAsync } from 'expo-notifications/build/setNotificationChannelAsync';
-import { cancelScheduledNotificationAsync } from 'expo-notifications/build/cancelScheduledNotificationAsync';
-import { scheduleNotificationAsync } from 'expo-notifications/build/scheduleNotificationAsync';
-import { setNotificationHandler } from 'expo-notifications/build/NotificationsHandler';
 
 const MILK_REMINDER_CHANNEL_ID = 'milk-reminders';
 
@@ -29,18 +16,19 @@ export type ScheduleDailyMilkNotificationOptions = {
 };
 
 function normalizePermission(
-  permission: NotificationPermissionsStatus,
+  permission: Notifications.NotificationPermissionsStatus,
 ): NotificationPermissionState {
   const iosStatus = permission.ios?.status;
   const granted =
     permission.granted ||
-    iosStatus === IosAuthorizationStatus.PROVISIONAL ||
-    iosStatus === IosAuthorizationStatus.EPHEMERAL;
+    iosStatus === Notifications.IosAuthorizationStatus.PROVISIONAL ||
+    iosStatus === Notifications.IosAuthorizationStatus.EPHEMERAL;
 
   return {
     status: granted
       ? 'granted'
-      : permission.status === 'denied' || iosStatus === IosAuthorizationStatus.DENIED
+      : permission.status === 'denied' ||
+        iosStatus === Notifications.IosAuthorizationStatus.DENIED
         ? 'denied'
         : 'undetermined',
     canAskAgain: permission.canAskAgain,
@@ -63,10 +51,10 @@ export async function ensureMilkReminderChannel(): Promise<boolean> {
   if (Platform.OS !== 'android') return false;
 
   try {
-    const channel = await setNotificationChannelAsync(MILK_REMINDER_CHANNEL_ID, {
+    const channel = await Notifications.setNotificationChannelAsync(MILK_REMINDER_CHANNEL_ID, {
       name: 'Milk reminders',
       description: 'Daily reminders to review the automatically recorded milk delivery.',
-      importance: AndroidImportance.DEFAULT,
+      importance: Notifications.AndroidImportance.DEFAULT,
     });
 
     return channel !== null;
@@ -80,7 +68,7 @@ export async function ensureMilkReminderChannel(): Promise<boolean> {
 }
 
 export async function getNotificationPermissionState(): Promise<NotificationPermissionState> {
-  return normalizePermission(await getPermissionsAsync());
+  return normalizePermission(await Notifications.getPermissionsAsync());
 }
 
 export async function requestNotificationPermission(): Promise<NotificationPermissionState> {
@@ -90,7 +78,7 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
   if (current.status === 'granted' || !current.canAskAgain) return current;
 
   return normalizePermission(
-    await requestPermissionsAsync({
+    await Notifications.requestPermissionsAsync({
       ios: { allowAlert: true, allowSound: true },
     }),
   );
@@ -114,7 +102,7 @@ export async function cancelDailyMilkNotification(
   identifier?: string | null,
 ): Promise<void> {
   if (!identifier) return;
-  await cancelScheduledNotificationAsync(identifier);
+  await Notifications.cancelScheduledNotificationAsync(identifier);
 }
 
 export async function scheduleDailyMilkNotification({
@@ -134,22 +122,22 @@ export async function scheduleDailyMilkNotification({
   const channelAvailable = await ensureMilkReminderChannel();
   await cancelDailyMilkNotification(existingIdentifier);
 
-  const trigger: NotificationTriggerInput =
+  const trigger: Notifications.NotificationTriggerInput =
     Platform.OS === 'android'
       ? {
-          type: SchedulableTriggerInputTypes.DAILY,
+          type: Notifications.SchedulableTriggerInputTypes.DAILY,
           hour,
           minute,
           ...(channelAvailable ? { channelId: MILK_REMINDER_CHANNEL_ID } : {}),
         }
       : {
-          type: SchedulableTriggerInputTypes.CALENDAR,
+          type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
           hour,
           minute,
           repeats: true,
         };
 
-  return scheduleNotificationAsync({
+  return Notifications.scheduleNotificationAsync({
     content: {
       title: 'Milk delivery recorded',
       body: "Today's milk entry is ready. Tap to review or edit.",
@@ -160,12 +148,19 @@ export async function scheduleDailyMilkNotification({
 }
 
 export function configureForegroundNotificationPresentation(): void {
-  setNotificationHandler({
-    handleNotification: async () => ({
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-      shouldShowBanner: true,
-      shouldShowList: true,
-    }),
-  });
+  try {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
+      }),
+    });
+  } catch (error) {
+    console.warn(
+      'Foreground notification presentation is unavailable in this runtime.',
+      error,
+    );
+  }
 }
