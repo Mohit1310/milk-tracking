@@ -1,9 +1,9 @@
 import { Pressable, Text, View } from "react-native";
 
-import type { DailyDelivery, MonthlyDelivery } from "../../data/milk-database";
-import { formatDate, toLitres, toRupees } from "../formatters";
-import { styles } from "../styles";
-import { EmptyState, SectionTitle } from "./primitives";
+import type { DailyDelivery, MonthlyDelivery } from "@/data/milk-database";
+import { formatDate, toLitres, toRupees } from "@/ui/formatters";
+import { styles } from "@/ui/styles";
+import { EmptyState, SectionTitle } from "@/ui/components/primitives";
 
 function formatMonth(month: string): string {
   const parsed = new Date(`${month}-01T12:00:00`);

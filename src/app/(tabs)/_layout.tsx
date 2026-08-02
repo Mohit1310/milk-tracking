@@ -1,6 +1,6 @@
 import { Redirect, Tabs } from "expo-router";
 
-import { useMilkTrackerContext } from "../../tracker-context";
+import { useMilkTrackerContext } from "@/tracker-context";
 
 export default function TabsLayout() {
   const { loading, settings } = useMilkTrackerContext();

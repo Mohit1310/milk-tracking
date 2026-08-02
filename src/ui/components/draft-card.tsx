@@ -1,9 +1,9 @@
 import { Pressable, Text, TextInput, View } from "react-native";
 
-import type { PlanDraft } from "../types";
-import { quantityPresets } from "../formatters";
-import { styles } from "../styles";
-import { colors } from "../theme";
+import type { PlanDraft } from "@/ui/types";
+import { quantityPresets } from "@/ui/formatters";
+import { styles } from "@/ui/styles";
+import { colors } from "@/ui/theme";
 
 export function DraftCard({
   draft,

@@ -1,8 +1,8 @@
 import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { styles } from "../styles";
-import { PlanEditor } from "./plan-editor";
+import { styles } from "@/ui/styles";
+import { PlanEditor } from "@/ui/components/plan-editor";
 
 type ScreenProps = Omit<
   React.ComponentProps<typeof PlanEditor>,

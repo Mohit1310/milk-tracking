@@ -2,14 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { FALLBACK_TYPES, defaultDrafts, timeFromSettings, toPlanInput } from "./formatters";
-import { styles } from "./styles";
-import { colors } from "./theme";
-import type { PlanDraft, PlanSaveInput, MilkTrackerViewProps } from "./types";
-import { SetupScreen, SettingsScreen } from "./components/plan-screens";
-import { TodayScreen } from "./components/today-screen";
-import { HistoryScreen } from "./components/history-screen";
-import { DeliveryEditor } from "./components/delivery-editor";
+import { FALLBACK_TYPES, defaultDrafts, timeFromSettings, toPlanInput } from "@/ui/formatters";
+import { styles } from "@/ui/styles";
+import { colors } from "@/ui/theme";
+import type { PlanDraft, PlanSaveInput, MilkTrackerViewProps } from "@/ui/types";
+import { SetupScreen, SettingsScreen } from "@/ui/components/plan-screens";
+import { TodayScreen } from "@/ui/components/today-screen";
+import { HistoryScreen } from "@/ui/components/history-screen";
+import { DeliveryEditor } from "@/ui/components/delivery-editor";
 
 export function MilkTrackerView({
   settings,

@@ -1,11 +1,11 @@
 import { Text, View } from "react-native";
 
-import type { DailyDelivery, MilkTypeId } from "../../data/milk-database";
-import type { DeliveryOverrideInput } from "../types";
-import { formatDate, toLitres, toRupees } from "../formatters";
-import { styles } from "../styles";
-import { Button, EmptyState } from "./primitives";
-import { DeliveryEditor } from "./delivery-editor";
+import type { DailyDelivery, MilkTypeId } from "@/data/milk-database";
+import type { DeliveryOverrideInput } from "@/ui/types";
+import { formatDate, toLitres, toRupees } from "@/ui/formatters";
+import { styles } from "@/ui/styles";
+import { Button, EmptyState } from "@/ui/components/primitives";
+import { DeliveryEditor } from "@/ui/components/delivery-editor";
 
 function DeliveryCards({
   delivery,

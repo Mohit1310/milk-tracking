@@ -1,8 +1,8 @@
 import { Pressable, Text, View } from "react-native";
 
-import type { NotificationPermissionState } from "../../notifications";
-import { styles } from "../styles";
-import { Button } from "./primitives";
+import type { NotificationPermissionState } from "@/notifications";
+import { styles } from "@/ui/styles";
+import { Button } from "@/ui/components/primitives";
 
 export function NotificationCard({
   enabled,

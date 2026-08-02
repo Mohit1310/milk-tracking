@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from "react-native";
 
-import { styles } from "../styles";
+import { styles } from "@/ui/styles";
 
 export function Button({
   label,

@@ -3,7 +3,7 @@ import type {
   DeliveryRule,
   MilkType,
 } from "../data/milk-database";
-import type { PlanDraft, PlanSaveInput } from "./types";
+import type { PlanDraft, PlanSaveInput } from "@/ui/types";
 
 export const FALLBACK_TYPES: MilkType[] = [
   { id: "cow", name: "Cow's milk" },

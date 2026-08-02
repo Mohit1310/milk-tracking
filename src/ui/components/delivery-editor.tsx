@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
-import type { DailyDelivery, MilkTypeId } from "../../data/milk-database";
-import type { DeliveryOverrideInput } from "../types";
-import { formatDate } from "../formatters";
-import { styles } from "../styles";
-import { Button } from "./primitives";
+import type { DailyDelivery, MilkTypeId } from "@/data/milk-database";
+import type { DeliveryOverrideInput } from "@/ui/types";
+import { formatDate } from "@/ui/formatters";
+import { styles } from "@/ui/styles";
+import { Button } from "@/ui/components/primitives";
 
 export function DeliveryEditor({
   delivery,

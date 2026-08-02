@@ -1,4 +1,4 @@
-import type { ScheduleDailyMilkNotificationOptions } from '../notifications';
+import type { ScheduleDailyMilkNotificationOptions } from "@/notifications";
 
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);

@@ -17,7 +17,7 @@ import {
   type DeliveryOverride,
   type DeliveryRule,
   type MilkTypeId,
-} from '../data/milk-database';
+} from '@/data/milk-database';
 
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);

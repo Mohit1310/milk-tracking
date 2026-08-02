@@ -1,15 +1,15 @@
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { Text, TextInput, View } from "react-native";
 
-import type { NotificationPermissionState } from "../../notifications";
-import type { MilkTypeId } from "../../data/milk-database";
-import type { PlanDraft } from "../types";
-import { parseTime } from "../formatters";
-import { styles } from "../styles";
-import { colors } from "../theme";
-import { Button, SectionTitle } from "./primitives";
-import { DraftCard } from "./draft-card";
-import { NotificationCard } from "./notification-card";
+import type { NotificationPermissionState } from "@/notifications";
+import type { MilkTypeId } from "@/data/milk-database";
+import type { PlanDraft } from "@/ui/types";
+import { parseTime } from "@/ui/formatters";
+import { styles } from "@/ui/styles";
+import { colors } from "@/ui/theme";
+import { Button, SectionTitle } from "@/ui/components/primitives";
+import { DraftCard } from "@/ui/components/draft-card";
+import { NotificationCard } from "@/ui/components/notification-card";
 
 export function PlanEditor({
   drafts,

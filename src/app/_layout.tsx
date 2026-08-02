@@ -3,8 +3,8 @@ import { SQLiteProvider } from "expo-sqlite";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { DATABASE_NAME, migrateDatabase } from "../data/milk-database";
-import { MilkTrackerProvider } from "../tracker-context";
+import { DATABASE_NAME, migrateDatabase } from "@/data/milk-database";
+import { MilkTrackerProvider } from "@/tracker-context";
 
 export default function RootLayout() {
   return (

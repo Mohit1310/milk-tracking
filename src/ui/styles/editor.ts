@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { colors } from "../theme";
+import { colors } from "@/ui/theme";
 
 export const editorStyles = StyleSheet.create({
   editorCard: {
