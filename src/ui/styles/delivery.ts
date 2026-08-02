@@ -129,6 +129,7 @@ export const deliveryStyles = StyleSheet.create({
   },
   calendarDotDefault: { backgroundColor: colors.muted, opacity: 0.5 },
   calendarDotEdited: { backgroundColor: colors.accent },
+  calendarDotSelected: { backgroundColor: "#FFFFFF" },
   calendarDotNone: {
     backgroundColor: "transparent",
     borderColor: colors.line,

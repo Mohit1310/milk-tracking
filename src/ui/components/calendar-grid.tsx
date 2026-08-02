@@ -61,7 +61,7 @@ function DayCell({
       <Text style={[styles.calendarDay, selected && styles.calendarDaySelected]}>
         {Number(day.date.slice(-2))}
       </Text>
-      <View style={[styles.calendarDot, dotStyle]} />
+      <View style={[styles.calendarDot, selected ? styles.calendarDotSelected : dotStyle]} />
     </Pressable>
   );
 }

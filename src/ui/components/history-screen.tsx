@@ -37,7 +37,7 @@ export function HistoryScreen({
   onNextMonth: () => void;
   canGoNext: boolean;
 }) {
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(() => todayKey());
 
   const elapsedDays = useMemo(() => {
     if (!month) return [];
