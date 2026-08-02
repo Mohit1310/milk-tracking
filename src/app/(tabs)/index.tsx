@@ -8,7 +8,8 @@ import { styles } from "@/ui/styles";
 import { colors } from "@/ui/theme";
 
 export default function TodayRoute() {
-  const { settings, today, loading, onSaveOverrides, onMarkNoDelivery } = useMilkTrackerContext();
+  const { settings, today, milkTypes, rules, loading, onSaveOverrides, onMarkNoDelivery } =
+    useMilkTrackerContext();
   const [editing, setEditing] = useState(false);
 
   if (loading) {
@@ -29,6 +30,8 @@ export default function TodayRoute() {
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <TodayScreen
           editing={editing}
+          milkTypes={milkTypes}
+          rules={rules}
           onCancelEdit={() => setEditing(false)}
           onEdit={() => setEditing(true)}
           onMarkNoDelivery={

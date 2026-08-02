@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 
-import type { DailyDelivery, MilkTypeId } from "@/data/milk-database";
+import type { DailyDelivery, DeliveryRule, MilkType, MilkTypeId } from "@/data/milk-database";
 import type { DeliveryOverrideInput } from "@/ui/types";
 import { formatDate, toLitres, toRupees } from "@/ui/formatters";
 import { styles } from "@/ui/styles";
@@ -49,6 +49,8 @@ function DeliveryCards({ delivery, onEdit }: { delivery: DailyDelivery; onEdit: 
 
 export function TodayScreen({
   today,
+  milkTypes,
+  rules,
   onEdit,
   editing,
   onSaveOverrides,
@@ -56,6 +58,8 @@ export function TodayScreen({
   onMarkNoDelivery,
 }: {
   today: DailyDelivery | null;
+  milkTypes?: MilkType[];
+  rules?: DeliveryRule[];
   onEdit: () => void;
   editing: boolean;
   onSaveOverrides?: (values: DeliveryOverrideInput[]) => void | Promise<void>;
@@ -73,6 +77,8 @@ export function TodayScreen({
         editing ? (
           <DeliveryEditor
             delivery={today}
+            milkTypes={milkTypes}
+            rules={rules}
             onCancel={onCancelEdit}
             onMarkNoDelivery={onMarkNoDelivery}
             onSave={async (values) => {

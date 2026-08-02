@@ -11,7 +11,7 @@ import { styles } from "@/ui/styles";
 import { colors } from "@/ui/theme";
 
 export default function HistoryRoute() {
-  const { settings, today, loading, onSaveOverrides, onMarkNoDelivery, onLoadMonth } =
+  const { settings, today, milkTypes, rules, loading, onSaveOverrides, onMarkNoDelivery, onLoadMonth } =
     useMilkTrackerContext();
   const [selectedMonth, setSelectedMonth] = useState(() => localMonthKey());
   const [month, setMonth] = useState<MonthlyDelivery | null>(null);
@@ -69,7 +69,10 @@ export default function HistoryRoute() {
           </View>
         ) : editingDelivery ? (
           <DeliveryEditor
+            key={editingDelivery.date}
             delivery={editingDelivery}
+            milkTypes={milkTypes}
+            rules={rules}
             onCancel={() => setEditingDate(null)}
             onMarkNoDelivery={async (milkTypeId) => {
               await onMarkNoDelivery?.(editingDelivery.date, milkTypeId);

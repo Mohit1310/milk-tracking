@@ -1,45 +1,71 @@
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
-import type { DailyDelivery, MilkTypeId } from "@/data/milk-database";
+import type {
+  DailyDelivery,
+  DailyDeliveryLine,
+  DeliveryRule,
+  MilkType,
+  MilkTypeId,
+} from "@/data/milk-database";
 import type { DeliveryOverrideInput } from "@/ui/types";
 import { formatDate } from "@/ui/formatters";
 import { styles } from "@/ui/styles";
 import { Button } from "@/ui/components/primitives";
 
+function defaultPricePaisePerLitre(
+  rules: DeliveryRule[],
+  milkTypeId: MilkTypeId,
+): number {
+  return rules.find((rule) => rule.milkTypeId === milkTypeId)?.pricePaisePerLitre ?? 0;
+}
+
 export function DeliveryEditor({
   delivery,
+  milkTypes,
+  rules = [],
   onSave,
   onCancel,
   onMarkNoDelivery,
 }: {
   delivery: DailyDelivery;
+  milkTypes?: MilkType[];
+  rules?: DeliveryRule[];
   onSave: (values: DeliveryOverrideInput[]) => void | Promise<void>;
   onCancel: () => void;
   onMarkNoDelivery?: (milkTypeId: MilkTypeId) => void | Promise<void>;
 }) {
-  const [values, setValues] = useState<Record<string, { quantity: string; price: string }>>(() =>
+  const rows: DailyDeliveryLine[] =
+    delivery.lines.length > 0
+      ? delivery.lines
+      : (milkTypes ?? []).map((type) => ({
+          milkTypeId: type.id,
+          milkTypeName: type.name,
+          quantityMl: 0,
+          pricePaisePerLitre: 0,
+          costPaise: 0,
+          source: "default",
+        }));
+
+  const [values, setValues] = useState<Record<string, string>>(() =>
     Object.fromEntries(
-      delivery.lines.map((line) => [
-        line.milkTypeId,
-        {
-          quantity: String(line.quantityMl / 1000),
-          price: String(line.pricePaisePerLitre / 100),
-        },
+      rows.map((row) => [
+        row.milkTypeId,
+        row.quantityMl === 0 ? "" : String(row.quantityMl / 1000),
       ]),
     ),
   );
   const [saving, setSaving] = useState(false);
 
   const save = async () => {
-    const edits = delivery.lines.map((line) => ({
+    const edits = rows.map((row) => ({
       date: delivery.date,
-      milkTypeId: line.milkTypeId,
-      quantityMl: Math.max(0, Math.round(Number(values[line.milkTypeId]?.quantity ?? 0) * 1000)),
-      pricePaisePerLitre: Math.max(
-        0,
-        Math.round(Number(values[line.milkTypeId]?.price ?? 0) * 100),
-      ),
+      milkTypeId: row.milkTypeId,
+      quantityMl: Math.max(0, Math.round(Number(values[row.milkTypeId] ?? 0) * 1000)),
+      pricePaisePerLitre:
+        row.pricePaisePerLitre > 0
+          ? row.pricePaisePerLitre
+          : defaultPricePaisePerLitre(rules, row.milkTypeId),
     }));
     setSaving(true);
     try {
@@ -60,42 +86,26 @@ export function DeliveryEditor({
           <Text style={styles.closeText}>Close</Text>
         </Pressable>
       </View>
-      {delivery.lines.map((line) => (
-        <View key={line.milkTypeId} style={styles.editLine}>
-          <Text style={styles.cardTitle}>{line.milkTypeName}</Text>
+      {rows.map((row) => (
+        <View key={row.milkTypeId} style={styles.editLine}>
+          <Text style={styles.cardTitle}>{row.milkTypeName}</Text>
           <View style={styles.editInputs}>
             <TextInput
-              accessibilityLabel={`${line.milkTypeName} quantity in litres`}
+              accessibilityLabel={`${row.milkTypeName} quantity in litres`}
               keyboardType="decimal-pad"
               onChangeText={(quantity) =>
-                setValues((current) => ({
-                  ...current,
-                  [line.milkTypeId]: { ...current[line.milkTypeId], quantity },
-                }))
+                setValues((current) => ({ ...current, [row.milkTypeId]: quantity }))
               }
               style={styles.editInput}
-              value={values[line.milkTypeId]?.quantity}
+              value={values[row.milkTypeId]}
             />
             <Text style={styles.inputUnit}>L</Text>
-            <TextInput
-              accessibilityLabel={`${line.milkTypeName} price per litre`}
-              keyboardType="decimal-pad"
-              onChangeText={(price) =>
-                setValues((current) => ({
-                  ...current,
-                  [line.milkTypeId]: { ...current[line.milkTypeId], price },
-                }))
-              }
-              style={styles.editInput}
-              value={values[line.milkTypeId]?.price}
-            />
-            <Text style={styles.inputUnit}>₹/L</Text>
           </View>
           <Pressable
             accessibilityRole="button"
-            onPress={() => void onMarkNoDelivery?.(line.milkTypeId)}
+            onPress={() => void onMarkNoDelivery?.(row.milkTypeId)}
           >
-            <Text style={styles.linkText}>Mark no {line.milkTypeName.toLowerCase()} delivery</Text>
+            <Text style={styles.linkText}>Mark no {row.milkTypeName.toLowerCase()} delivery</Text>
           </Pressable>
         </View>
       ))}
