@@ -67,7 +67,7 @@ export function HistoryScreen({
         <Text style={styles.summaryValue}>
           {toRupees(summary.totalCostPaise)}
         </Text>
-        <Text style={styles.muted}>
+        <Text style={styles.summaryMuted}>
           {toLitres(summary.totalQuantityMl)} delivered this month
         </Text>
         <View style={styles.summaryBreakdown}>
@@ -76,7 +76,7 @@ export function HistoryScreen({
               <Text style={styles.breakdownValue}>
                 {toLitres(total.quantityMl)}
               </Text>
-              <Text style={styles.muted}>{total.milkTypeName}</Text>
+              <Text style={styles.summaryMuted}>{total.milkTypeName}</Text>
             </View>
           ))}
         </View>

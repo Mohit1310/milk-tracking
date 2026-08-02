@@ -10,6 +10,11 @@ export const deliveryStyles = StyleSheet.create({
     padding: 20,
   },
   summaryValue: { color: "#FFFFFF", fontSize: 30, fontWeight: "800" },
+  summaryMuted: {
+    color: "rgba(255,255,255,0.82)",
+    fontSize: 13,
+    lineHeight: 19,
+  },
   summaryBreakdown: {
     borderTopColor: "rgba(255,255,255,0.25)",
     borderTopWidth: 1,
