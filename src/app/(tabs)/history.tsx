@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import type { MonthlyDelivery } from "@/data/milk-database";
 import { localMonthKey } from "@/milk-tracker";
 import { useMilkTrackerContext } from "@/tracker-context";
-import { DeliveryEditor } from "@/ui/components/delivery-editor";
+import { DeliveryEditorSheet } from "@/ui/components/delivery-editor-sheet";
 import { HistoryScreen } from "@/ui/components/history-screen";
 import { styles } from "@/ui/styles";
 import { colors } from "@/ui/theme";
@@ -67,19 +67,6 @@ export default function HistoryRoute() {
           <View style={styles.loading}>
             <ActivityIndicator color={colors.accent} />
           </View>
-        ) : editingDelivery ? (
-          <DeliveryEditor
-            key={editingDelivery.date}
-            delivery={editingDelivery}
-            milkTypes={milkTypes}
-            rules={rules}
-            onCancel={() => setEditingDate(null)}
-            onSave={async (values) => {
-              await onSaveOverrides?.(values);
-              await reloadMonth();
-              setEditingDate(null);
-            }}
-          />
         ) : (
           <HistoryScreen
             canGoNext={canGoNext}
@@ -90,6 +77,17 @@ export default function HistoryRoute() {
           />
         )}
       </ScrollView>
+      <DeliveryEditorSheet
+        delivery={editingDelivery}
+        milkTypes={milkTypes}
+        rules={rules}
+        onDismiss={() => setEditingDate(null)}
+        onSave={async (values) => {
+          await onSaveOverrides?.(values);
+          await reloadMonth();
+          setEditingDate(null);
+        }}
+      />
     </SafeAreaView>
   );
 }
