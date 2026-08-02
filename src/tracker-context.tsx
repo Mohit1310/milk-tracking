@@ -1,11 +1,11 @@
 import { createContext, useContext, type PropsWithChildren } from "react";
 
-import { type MilkTypeId } from "./data/milkDatabase";
+import { type MilkTypeId } from "./data/milk-database";
 import {
   localDateKey,
   useMilkTracker,
   type MilkTrackerSetup,
-} from "./milkTracker";
+} from "./milk-tracker";
 import type {
   DeliveryOverrideInput,
   MilkTrackerViewProps,

@@ -22,7 +22,7 @@ import type {
   MilkType,
   MilkTypeId,
   MonthlyDelivery,
-} from "./data/milkDatabase";
+} from "./data/milk-database";
 import type { NotificationPermissionState } from "./notifications";
 
 export interface PlanRuleInput {
