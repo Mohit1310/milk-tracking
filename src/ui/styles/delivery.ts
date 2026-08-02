@@ -73,4 +73,15 @@ export const deliveryStyles = StyleSheet.create({
     marginBottom: 9,
     padding: 15,
   },
+  monthNav: { alignItems: "center", flexDirection: "row", gap: 8 },
+  monthNavButton: {
+    alignItems: "center",
+    borderColor: colors.line,
+    borderRadius: 12,
+    borderWidth: 1,
+    height: 40,
+    justifyContent: "center",
+    width: 40,
+  },
+  monthNavArrow: { color: colors.accent, fontSize: 22, fontWeight: "700", lineHeight: 24 },
 });

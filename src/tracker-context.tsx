@@ -48,6 +48,7 @@ export function MilkTrackerProvider({ children }: PropsWithChildren) {
     onSaveOverrides: saveOverrides,
     onMarkNoDelivery: markNoDelivery,
     onClearOverride: model.clearDayOverride,
+    onLoadMonth: model.loadMonth,
     onRequestNotifications: model.requestNotifications,
     onOpenNotificationSettings: model.openNotificationSettings,
   };

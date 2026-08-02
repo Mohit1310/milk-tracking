@@ -58,6 +58,7 @@ export type MilkTrackerActions = {
   saveDayOverrides: (overrides: DeliveryOverride[]) => Promise<void>;
   clearDayOverride: (date: string, milkTypeId: DeliveryOverride["milkTypeId"]) => Promise<void>;
   markNoDelivery: (date: string, milkTypeId: DeliveryOverride["milkTypeId"]) => Promise<void>;
+  loadMonth: (month: string) => Promise<MonthlyDelivery>;
   requestNotifications: () => Promise<void>;
   openNotificationSettings: () => Promise<void>;
   refresh: () => Promise<void>;
@@ -241,6 +242,11 @@ export function useMilkTracker(): MilkTrackerViewModel & MilkTrackerActions {
     [db, refresh],
   );
 
+  const loadMonth = useCallback(
+    async (month: string): Promise<MonthlyDelivery> => getDeliveryMonth(db, month),
+    [db],
+  );
+
   const requestNotifications = useCallback(async () => {
     await requestNotificationPermission();
     await refresh();
@@ -259,6 +265,7 @@ export function useMilkTracker(): MilkTrackerViewModel & MilkTrackerActions {
     saveDayOverrides,
     clearDayOverride,
     markNoDelivery,
+    loadMonth,
     requestNotifications,
     openNotificationSettings,
     refresh,

@@ -25,9 +25,15 @@ function todayKey(): string {
 export function HistoryScreen({
   month,
   onEdit,
+  onPrevMonth,
+  onNextMonth,
+  canGoNext,
 }: {
   month: MonthlyDelivery | null;
   onEdit: (delivery: DailyDelivery) => void;
+  onPrevMonth: () => void;
+  onNextMonth: () => void;
+  canGoNext: boolean;
 }) {
   const elapsedDays = useMemo(() => {
     if (!month) return [];
@@ -64,8 +70,35 @@ export function HistoryScreen({
     return <EmptyState message="Your monthly history will appear here once tracking starts." />;
   return (
     <View>
-      <Text style={styles.eyebrow}>HISTORY</Text>
-      <Text style={styles.heroTitle}>{formatMonth(month.month)}</Text>
+      <View style={styles.rowBetween}>
+        <View style={styles.flexText}>
+          <Text style={styles.eyebrow}>HISTORY</Text>
+          <Text style={styles.heroTitle}>{formatMonth(month.month)}</Text>
+        </View>
+        <View style={styles.monthNav}>
+          <Pressable
+            accessibilityLabel="Previous month"
+            accessibilityRole="button"
+            onPress={onPrevMonth}
+            style={({ pressed }) => [styles.monthNavButton, pressed && styles.pressed]}
+          >
+            <Text style={styles.monthNavArrow}>‹</Text>
+          </Pressable>
+          <Pressable
+            accessibilityLabel="Next month"
+            accessibilityRole="button"
+            disabled={!canGoNext}
+            onPress={onNextMonth}
+            style={({ pressed }) => [
+              styles.monthNavButton,
+              !canGoNext && styles.buttonDisabled,
+              pressed && styles.pressed,
+            ]}
+          >
+            <Text style={styles.monthNavArrow}>›</Text>
+          </Pressable>
+        </View>
+      </View>
       <View style={styles.summaryCard}>
         <Text style={styles.summaryValue}>{toRupees(summary.totalCostPaise)}</Text>
         <Text style={styles.summaryMuted}>
