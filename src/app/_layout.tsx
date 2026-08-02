@@ -11,7 +11,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <SQLiteProvider databaseName={DATABASE_NAME} onInit={migrateDatabase}>
         <MilkTrackerProvider>
-          <StatusBar style="auto" />
+          <StatusBar style="dark" />
           <Stack screenOptions={{ headerShown: false }} />
         </MilkTrackerProvider>
       </SQLiteProvider>
