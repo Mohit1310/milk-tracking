@@ -1,9 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import type { DailyDelivery, MonthlyDelivery } from "@/data/milk-database";
-import { formatDate, toLitres, toRupees } from "@/ui/formatters";
+import { toLitres, toRupees } from "@/ui/formatters";
 import { styles } from "@/ui/styles";
+import { CalendarGrid } from "@/ui/components/calendar-grid";
+import { DayDetailCard } from "@/ui/components/day-detail-card";
 import { EmptyState, SectionTitle } from "@/ui/components/primitives";
 
 function formatMonth(month: string): string {
@@ -35,6 +37,8 @@ export function HistoryScreen({
   onNextMonth: () => void;
   canGoNext: boolean;
 }) {
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
   const elapsedDays = useMemo(() => {
     if (!month) return [];
     const key = todayKey();
@@ -65,6 +69,11 @@ export function HistoryScreen({
       totalCostPaise: elapsedDays.reduce((sum, day) => sum + day.totalCostPaise, 0),
     };
   }, [elapsedDays]);
+
+  const selectedDay = useMemo(
+    () => month?.days.find((day) => day.date === selectedDate) ?? null,
+    [month, selectedDate],
+  );
 
   if (!month || elapsedDays.length === 0)
     return <EmptyState message="Your monthly history will appear here once tracking starts." />;
@@ -113,23 +122,14 @@ export function HistoryScreen({
           ))}
         </View>
       </View>
-      <SectionTitle title="Daily entries" detail="Tap a day to correct the quantity or price." />
-      {elapsedDays.map((day) => (
-        <Pressable
-          key={day.date}
-          accessibilityRole="button"
-          onPress={() => onEdit(day)}
-          style={({ pressed }) => [styles.historyRow, pressed && styles.pressed]}
-        >
-          <View style={styles.flexText}>
-            <Text style={styles.cardTitle}>{formatDate(day.date)}</Text>
-            <Text style={styles.muted}>
-              {day.hasOverride ? "Edited" : "Automatic default"} · {toLitres(day.totalQuantityMl)}
-            </Text>
-          </View>
-          <Text style={styles.lineCost}>{toRupees(day.totalCostPaise)}</Text>
-        </Pressable>
-      ))}
+      <SectionTitle title="Calendar" detail="Tap a day to view or correct its details." />
+      <CalendarGrid
+        month={month}
+        today={todayKey()}
+        selectedDate={selectedDate}
+        onSelect={setSelectedDate}
+      />
+      {selectedDay ? <DayDetailCard day={selectedDay} onEdit={onEdit} /> : null}
     </View>
   );
 }
