@@ -1,6 +1,5 @@
 import { createContext, useContext, type PropsWithChildren } from "react";
 
-import { type MilkTypeId } from "@/data/milk-database";
 import { localDateKey, useMilkTracker, type MilkTrackerSetup } from "@/milk-tracker";
 import type { DeliveryOverrideInput, MilkTrackerViewProps, PlanSaveInput } from "@/ui";
 
@@ -32,9 +31,6 @@ export function MilkTrackerProvider({ children }: PropsWithChildren) {
     await model.saveDayOverrides(inputs);
   };
 
-  const markNoDelivery = (date: string, milkTypeId: MilkTypeId): Promise<void> =>
-    model.markNoDelivery(date, milkTypeId);
-
   const value: MilkTrackerViewProps = {
     settings: model.settings,
     milkTypes: model.milkTypes,
@@ -46,8 +42,6 @@ export function MilkTrackerProvider({ children }: PropsWithChildren) {
     onSaveSetup: savePlan,
     onSavePlan: savePlan,
     onSaveOverrides: saveOverrides,
-    onMarkNoDelivery: markNoDelivery,
-    onClearOverride: model.clearDayOverride,
     onLoadMonth: model.loadMonth,
     onRequestNotifications: model.requestNotifications,
     onOpenNotificationSettings: model.openNotificationSettings,

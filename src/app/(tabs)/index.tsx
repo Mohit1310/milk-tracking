@@ -8,8 +8,7 @@ import { styles } from "@/ui/styles";
 import { colors } from "@/ui/theme";
 
 export default function TodayRoute() {
-  const { settings, today, milkTypes, rules, loading, onSaveOverrides, onMarkNoDelivery } =
-    useMilkTrackerContext();
+  const { settings, today, milkTypes, rules, loading, onSaveOverrides } = useMilkTrackerContext();
   const [editing, setEditing] = useState(false);
 
   if (loading) {
@@ -34,11 +33,6 @@ export default function TodayRoute() {
           rules={rules}
           onCancelEdit={() => setEditing(false)}
           onEdit={() => setEditing(true)}
-          onMarkNoDelivery={
-            today && onMarkNoDelivery
-              ? (milkTypeId) => onMarkNoDelivery(today.date, milkTypeId)
-              : undefined
-          }
           onSaveOverrides={onSaveOverrides}
           today={today}
         />

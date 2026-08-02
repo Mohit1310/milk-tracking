@@ -30,7 +30,7 @@ export const editorStyles = StyleSheet.create({
   },
   inputUnit: { color: colors.muted, fontSize: 13, marginHorizontal: 7 },
   linkText: {
-    color: colors.danger,
+    color: colors.accent,
     fontSize: 13,
     fontWeight: "700",
     marginTop: 11,

@@ -13,11 +13,12 @@ import { formatDate } from "@/ui/formatters";
 import { styles } from "@/ui/styles";
 import { Button } from "@/ui/components/primitives";
 
-function defaultPricePaisePerLitre(
-  rules: DeliveryRule[],
-  milkTypeId: MilkTypeId,
-): number {
+function defaultPricePaisePerLitre(rules: DeliveryRule[], milkTypeId: MilkTypeId): number {
   return rules.find((rule) => rule.milkTypeId === milkTypeId)?.pricePaisePerLitre ?? 0;
+}
+
+function toLitresText(quantityMl: number): string {
+  return quantityMl === 0 ? "" : String(quantityMl / 1000);
 }
 
 export function DeliveryEditor({
@@ -26,14 +27,12 @@ export function DeliveryEditor({
   rules = [],
   onSave,
   onCancel,
-  onMarkNoDelivery,
 }: {
   delivery: DailyDelivery;
   milkTypes?: MilkType[];
   rules?: DeliveryRule[];
   onSave: (values: DeliveryOverrideInput[]) => void | Promise<void>;
   onCancel: () => void;
-  onMarkNoDelivery?: (milkTypeId: MilkTypeId) => void | Promise<void>;
 }) {
   const rows: DailyDeliveryLine[] =
     delivery.lines.length > 0
@@ -48,14 +47,22 @@ export function DeliveryEditor({
         }));
 
   const [values, setValues] = useState<Record<string, string>>(() =>
-    Object.fromEntries(
-      rows.map((row) => [
-        row.milkTypeId,
-        row.quantityMl === 0 ? "" : String(row.quantityMl / 1000),
-      ]),
-    ),
+    Object.fromEntries(rows.map((row) => [row.milkTypeId, toLitresText(row.quantityMl)])),
   );
   const [saving, setSaving] = useState(false);
+
+  const isNoDelivery = (milkTypeId: MilkTypeId): boolean => {
+    const value = values[milkTypeId];
+    return value === "" || Number(value) === 0;
+  };
+
+  const setNoDelivery = (milkTypeId: MilkTypeId): void =>
+    setValues((current) => ({ ...current, [milkTypeId]: "" }));
+
+  const restoreDefault = (milkTypeId: MilkTypeId): void => {
+    const row = rows.find((candidate) => candidate.milkTypeId === milkTypeId);
+    setValues((current) => ({ ...current, [milkTypeId]: toLitresText(row?.quantityMl ?? 0) }));
+  };
 
   const save = async () => {
     const edits = rows.map((row) => ({
@@ -86,29 +93,42 @@ export function DeliveryEditor({
           <Text style={styles.closeText}>Close</Text>
         </Pressable>
       </View>
-      {rows.map((row) => (
-        <View key={row.milkTypeId} style={styles.editLine}>
-          <Text style={styles.cardTitle}>{row.milkTypeName}</Text>
-          <View style={styles.editInputs}>
-            <TextInput
-              accessibilityLabel={`${row.milkTypeName} quantity in litres`}
-              keyboardType="decimal-pad"
-              onChangeText={(quantity) =>
-                setValues((current) => ({ ...current, [row.milkTypeId]: quantity }))
+      {rows.map((row) => {
+        const noDelivery = isNoDelivery(row.milkTypeId);
+        return (
+          <View key={row.milkTypeId} style={styles.editLine}>
+            <Text style={styles.cardTitle}>{row.milkTypeName}</Text>
+            <View style={styles.editInputs}>
+              <TextInput
+                accessibilityLabel={`${row.milkTypeName} quantity in litres`}
+                keyboardType="decimal-pad"
+                onChangeText={(quantity) =>
+                  setValues((current) => ({ ...current, [row.milkTypeId]: quantity }))
+                }
+                placeholder="0"
+                style={styles.editInput}
+                value={values[row.milkTypeId]}
+              />
+              <Text style={styles.inputUnit}>L</Text>
+            </View>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={
+                noDelivery
+                  ? `Restore default ${row.milkTypeName} quantity`
+                  : `Mark no ${row.milkTypeName} delivery`
               }
-              style={styles.editInput}
-              value={values[row.milkTypeId]}
-            />
-            <Text style={styles.inputUnit}>L</Text>
+              onPress={() =>
+                noDelivery ? restoreDefault(row.milkTypeId) : setNoDelivery(row.milkTypeId)
+              }
+            >
+              <Text style={styles.linkText}>
+                {noDelivery ? "No delivery · Undo" : `No ${row.milkTypeName} received?`}
+              </Text>
+            </Pressable>
           </View>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => void onMarkNoDelivery?.(row.milkTypeId)}
-          >
-            <Text style={styles.linkText}>Mark no {row.milkTypeName.toLowerCase()} delivery</Text>
-          </Pressable>
-        </View>
-      ))}
+        );
+      })}
       <Button
         label={saving ? "Saving…" : "Save changes"}
         onPress={() => void save()}

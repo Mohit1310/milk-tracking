@@ -19,7 +19,6 @@ import {
   type NotificationPermissionState,
 } from "@/notifications";
 import {
-  clearOverride,
   getDeliveryDay,
   getDeliveryMonth,
   listMilkTypes,
@@ -56,8 +55,6 @@ export type MilkTrackerActions = {
   savePlan: (setup: MilkTrackerSetup) => Promise<void>;
   saveDayOverride: (override: DeliveryOverride) => Promise<void>;
   saveDayOverrides: (overrides: DeliveryOverride[]) => Promise<void>;
-  clearDayOverride: (date: string, milkTypeId: DeliveryOverride["milkTypeId"]) => Promise<void>;
-  markNoDelivery: (date: string, milkTypeId: DeliveryOverride["milkTypeId"]) => Promise<void>;
   loadMonth: (month: string) => Promise<MonthlyDelivery>;
   requestNotifications: () => Promise<void>;
   openNotificationSettings: () => Promise<void>;
@@ -219,29 +216,6 @@ export function useMilkTracker(): MilkTrackerViewModel & MilkTrackerActions {
     [db, refresh],
   );
 
-  const clearDayOverride = useCallback(
-    async (date: string, milkTypeId: DeliveryOverride["milkTypeId"]) => {
-      await clearOverride(db, date, milkTypeId);
-      await refresh();
-    },
-    [db, refresh],
-  );
-
-  const markNoDelivery = useCallback(
-    async (date: string, milkTypeId: DeliveryOverride["milkTypeId"]) => {
-      const delivery = await getDeliveryDay(db, date);
-      const line = delivery.lines.find((candidate) => candidate.milkTypeId === milkTypeId);
-      await saveOverride(db, {
-        date,
-        milkTypeId,
-        quantityMl: 0,
-        pricePaisePerLitre: line?.pricePaisePerLitre ?? 0,
-      });
-      await refresh();
-    },
-    [db, refresh],
-  );
-
   const loadMonth = useCallback(
     async (month: string): Promise<MonthlyDelivery> => getDeliveryMonth(db, month),
     [db],
@@ -263,8 +237,6 @@ export function useMilkTracker(): MilkTrackerViewModel & MilkTrackerActions {
     savePlan,
     saveDayOverride,
     saveDayOverrides,
-    clearDayOverride,
-    markNoDelivery,
     loadMonth,
     requestNotifications,
     openNotificationSettings,
