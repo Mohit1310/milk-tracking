@@ -29,15 +29,12 @@ export interface DeliveryOverrideInput {
   pricePaisePerLitre: number;
 }
 
-export type MilkTrackerScreen = "today" | "history" | "settings";
-
 export interface MilkTrackerViewProps {
   settings: AppSettings | null;
   milkTypes?: MilkType[];
   rules?: DeliveryRule[];
   today: DailyDelivery | null;
   month: MonthlyDelivery | null;
-  route?: MilkTrackerScreen;
   loading?: boolean;
   notificationPermission?: NotificationPermissionState;
   onSaveSetup: (input: PlanSaveInput) => void | Promise<void>;

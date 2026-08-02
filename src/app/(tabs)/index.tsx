@@ -1,6 +1,45 @@
+import { useState } from "react";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import { useMilkTrackerContext } from "@/tracker-context";
-import { MilkTrackerView } from "@/ui";
+import { TodayScreen } from "@/ui/components/today-screen";
+import { styles } from "@/ui/styles";
+import { colors } from "@/ui/theme";
 
 export default function TodayRoute() {
-  return <MilkTrackerView {...useMilkTrackerContext()} route="today" />;
+  const { settings, today, loading, onSaveOverrides, onMarkNoDelivery } = useMilkTrackerContext();
+  const [editing, setEditing] = useState(false);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.loading}>
+          <ActivityIndicator color={colors.accent} />
+          <Text style={styles.muted}>Loading your milk plan…</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!settings?.setupCompleted) return null;
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        <TodayScreen
+          editing={editing}
+          onCancelEdit={() => setEditing(false)}
+          onEdit={() => setEditing(true)}
+          onMarkNoDelivery={
+            today && onMarkNoDelivery
+              ? (milkTypeId) => onMarkNoDelivery(today.date, milkTypeId)
+              : undefined
+          }
+          onSaveOverrides={onSaveOverrides}
+          today={today}
+        />
+      </ScrollView>
+    </SafeAreaView>
+  );
 }
