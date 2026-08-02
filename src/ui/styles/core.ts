@@ -27,6 +27,12 @@ export const coreStyles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionHeading: { marginTop: 24, marginBottom: 10 },
+  sectionHeadingRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
+  },
   sectionTitle: { color: colors.ink, fontSize: 18, fontWeight: "800" },
   sectionDetail: { color: colors.muted, fontSize: 13, marginTop: 3 },
   typeCard: {

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import { styles } from "@/ui/styles";
@@ -31,11 +32,24 @@ export function Button({
   );
 }
 
-export function SectionTitle({ title, detail }: { title: string; detail?: string }) {
+export function SectionTitle({
+  title,
+  detail,
+  action,
+}: {
+  title: string;
+  detail?: string;
+  action?: ReactNode;
+}) {
   return (
     <View style={styles.sectionHeading}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      {detail ? <Text style={styles.sectionDetail}>{detail}</Text> : null}
+      <View style={styles.sectionHeadingRow}>
+        <View style={styles.flexText}>
+          <Text style={styles.sectionTitle}>{title}</Text>
+          {detail ? <Text style={styles.sectionDetail}>{detail}</Text> : null}
+        </View>
+        {action}
+      </View>
     </View>
   );
 }

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Pressable, Text, View } from "react-native";
-
+import Ionicons from "@expo/vector-icons/Ionicons";
 import type { DailyDelivery, MonthlyDelivery } from "@/data/milk-database";
 import { toLitres, toRupees } from "@/ui/formatters";
 import { styles } from "@/ui/styles";
@@ -84,29 +84,6 @@ export function HistoryScreen({
           <Text style={styles.eyebrow}>HISTORY</Text>
           <Text style={styles.heroTitle}>{formatMonth(month.month)}</Text>
         </View>
-        <View style={styles.monthNav}>
-          <Pressable
-            accessibilityLabel="Previous month"
-            accessibilityRole="button"
-            onPress={onPrevMonth}
-            style={({ pressed }) => [styles.monthNavButton, pressed && styles.pressed]}
-          >
-            <Text style={styles.monthNavArrow}>‹</Text>
-          </Pressable>
-          <Pressable
-            accessibilityLabel="Next month"
-            accessibilityRole="button"
-            disabled={!canGoNext}
-            onPress={onNextMonth}
-            style={({ pressed }) => [
-              styles.monthNavButton,
-              !canGoNext && styles.buttonDisabled,
-              pressed && styles.pressed,
-            ]}
-          >
-            <Text style={styles.monthNavArrow}>›</Text>
-          </Pressable>
-        </View>
       </View>
       <View style={styles.summaryCard}>
         <Text style={styles.summaryValue}>{toRupees(summary.totalCostPaise)}</Text>
@@ -122,7 +99,38 @@ export function HistoryScreen({
           ))}
         </View>
       </View>
-      <SectionTitle title="Calendar" detail="Tap a day to view or correct its details." />
+      <SectionTitle
+        title="Calendar"
+        detail="Tap a day to view or correct its details."
+        action={
+          <View style={styles.monthNav}>
+            <Pressable
+              accessibilityLabel="Previous month"
+              accessibilityRole="button"
+              onPress={onPrevMonth}
+              style={({ pressed }) => [
+                styles.monthNavButton,
+                pressed && styles.monthNavButtonPressed,
+              ]}
+            >
+              <Ionicons name="chevron-back-outline" size={24} color="black" />
+            </Pressable>
+            <Pressable
+              accessibilityLabel="Next month"
+              accessibilityRole="button"
+              disabled={!canGoNext}
+              onPress={onNextMonth}
+              style={({ pressed }) => [
+                styles.monthNavButton,
+                !canGoNext && styles.buttonDisabled,
+                pressed && canGoNext && styles.monthNavButtonPressed,
+              ]}
+            >
+              <Ionicons name="chevron-forward-outline" size={24} color="black" />
+            </Pressable>
+          </View>
+        }
+      />
       <CalendarGrid
         month={month}
         today={todayKey()}

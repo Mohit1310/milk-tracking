@@ -23,7 +23,10 @@ export function DayDetailCard({
             accessibilityRole="button"
             accessibilityLabel={`Edit ${formatDate(day.date)}`}
             onPress={() => onEdit(day)}
-            style={({ pressed }) => [styles.monthNavButton, pressed && styles.pressed]}
+            style={({ pressed }) => [
+              styles.monthNavButton,
+              pressed && styles.monthNavButtonPressed,
+            ]}
           >
             <Text style={styles.monthNavArrow}>✎</Text>
           </Pressable>
