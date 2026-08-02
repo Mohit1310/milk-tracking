@@ -35,4 +35,18 @@ export const editorStyles = StyleSheet.create({
     fontWeight: "700",
     marginTop: 11,
   },
+  addTypeRow: {
+    alignItems: "center",
+    borderColor: colors.accent,
+    borderRadius: 10,
+    borderStyle: "dashed",
+    borderWidth: 1,
+    marginTop: 16,
+    paddingVertical: 11,
+  },
+  addTypeText: {
+    color: colors.accent,
+    fontSize: 14,
+    fontWeight: "700",
+  },
 });
