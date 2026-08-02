@@ -7,28 +7,18 @@ import { styles } from "@/ui/styles";
 import { Button, EmptyState } from "@/ui/components/primitives";
 import { DeliveryEditor } from "@/ui/components/delivery-editor";
 
-function DeliveryCards({
-  delivery,
-  onEdit,
-}: {
-  delivery: DailyDelivery;
-  onEdit: () => void;
-}) {
+function DeliveryCards({ delivery, onEdit }: { delivery: DailyDelivery; onEdit: () => void }) {
   return (
     <View>
       <View style={styles.rowBetween}>
         <View>
           <Text style={styles.dateTitle}>{formatDate(delivery.date)}</Text>
           <Text style={styles.muted}>
-            {delivery.hasOverride
-              ? "Edited for this day"
-              : "From your daily defaults"}
+            {delivery.hasOverride ? "Edited for this day" : "From your daily defaults"}
           </Text>
         </View>
         <View style={styles.statusPill}>
-          <Text style={styles.statusText}>
-            {delivery.hasOverride ? "Edited" : "Recorded"}
-          </Text>
+          <Text style={styles.statusText}>{delivery.hasOverride ? "Edited" : "Recorded"}</Text>
         </View>
       </View>
       <View style={styles.linesCard}>
@@ -38,8 +28,7 @@ function DeliveryCards({
               <View style={styles.flexText}>
                 <Text style={styles.cardTitle}>{line.milkTypeName}</Text>
                 <Text style={styles.muted}>
-                  {toLitres(line.quantityMl)} ×{" "}
-                  {toRupees(line.pricePaisePerLitre)}/L
+                  {toLitres(line.quantityMl)} × {toRupees(line.pricePaisePerLitre)}/L
                 </Text>
               </View>
               <Text style={styles.lineCost}>{toRupees(line.costPaise)}</Text>
@@ -49,12 +38,8 @@ function DeliveryCards({
           <Text style={styles.muted}>No milk recorded for this day.</Text>
         )}
         <View style={styles.totalRow}>
-          <Text style={styles.totalLabel}>
-            Total · {toLitres(delivery.totalQuantityMl)}
-          </Text>
-          <Text style={styles.totalValue}>
-            {toRupees(delivery.totalCostPaise)}
-          </Text>
+          <Text style={styles.totalLabel}>Total · {toLitres(delivery.totalQuantityMl)}</Text>
+          <Text style={styles.totalValue}>{toRupees(delivery.totalCostPaise)}</Text>
         </View>
       </View>
       <Button label="Edit this day" onPress={onEdit} secondary />

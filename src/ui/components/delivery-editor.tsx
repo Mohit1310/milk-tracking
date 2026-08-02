@@ -18,9 +18,7 @@ export function DeliveryEditor({
   onCancel: () => void;
   onMarkNoDelivery?: (milkTypeId: MilkTypeId) => void | Promise<void>;
 }) {
-  const [values, setValues] = useState<
-    Record<string, { quantity: string; price: string }>
-  >(() =>
+  const [values, setValues] = useState<Record<string, { quantity: string; price: string }>>(() =>
     Object.fromEntries(
       delivery.lines.map((line) => [
         line.milkTypeId,
@@ -37,10 +35,7 @@ export function DeliveryEditor({
     const edits = delivery.lines.map((line) => ({
       date: delivery.date,
       milkTypeId: line.milkTypeId,
-      quantityMl: Math.max(
-        0,
-        Math.round(Number(values[line.milkTypeId]?.quantity ?? 0) * 1000),
-      ),
+      quantityMl: Math.max(0, Math.round(Number(values[line.milkTypeId]?.quantity ?? 0) * 1000)),
       pricePaisePerLitre: Math.max(
         0,
         Math.round(Number(values[line.milkTypeId]?.price ?? 0) * 100),
@@ -61,11 +56,7 @@ export function DeliveryEditor({
           <Text style={styles.cardTitle}>Edit {formatDate(delivery.date)}</Text>
           <Text style={styles.muted}>Save only what actually arrived.</Text>
         </View>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Close editor"
-          onPress={onCancel}
-        >
+        <Pressable accessibilityRole="button" accessibilityLabel="Close editor" onPress={onCancel}>
           <Text style={styles.closeText}>Close</Text>
         </Pressable>
       </View>
@@ -104,9 +95,7 @@ export function DeliveryEditor({
             accessibilityRole="button"
             onPress={() => void onMarkNoDelivery?.(line.milkTypeId)}
           >
-            <Text style={styles.linkText}>
-              Mark no {line.milkTypeName.toLowerCase()} delivery
-            </Text>
+            <Text style={styles.linkText}>Mark no {line.milkTypeName.toLowerCase()} delivery</Text>
           </Pressable>
         </View>
       ))}

@@ -1,8 +1,8 @@
-import * as SQLite from 'expo-sqlite';
+import * as SQLite from "expo-sqlite";
 
-export const DATABASE_NAME = 'milk-tracker.db';
+export const DATABASE_NAME = "milk-tracker.db";
 
-export type MilkTypeId = 'cow' | 'buffalo';
+export type MilkTypeId = "cow" | "buffalo";
 
 export interface MilkType {
   id: MilkTypeId;
@@ -39,7 +39,7 @@ export interface DailyDeliveryLine {
   quantityMl: number;
   pricePaisePerLitre: number;
   costPaise: number;
-  source: 'default' | 'override';
+  source: "default" | "override";
 }
 
 export interface DailyDelivery {
@@ -85,7 +85,7 @@ type DeliveryRow = {
   milk_type_name: string;
   quantity_ml: number;
   price_paise_per_litre: number;
-  source: 'default' | 'override';
+  source: "default" | "override";
 };
 
 const DATABASE_VERSION = 1;
@@ -99,8 +99,8 @@ export async function initializeDatabase(
 }
 
 export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
-  await db.execAsync('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;');
-  const version = await db.getFirstAsync<{ user_version: number }>('PRAGMA user_version');
+  await db.execAsync("PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;");
+  const version = await db.getFirstAsync<{ user_version: number }>("PRAGMA user_version");
 
   if ((version?.user_version ?? 0) < 1) {
     await db.execAsync(`
@@ -146,12 +146,12 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   }
 
   if ((version?.user_version ?? 0) > DATABASE_VERSION) {
-    throw new Error('This database was created by a newer version of the app.');
+    throw new Error("This database was created by a newer version of the app.");
   }
 }
 
 export async function listMilkTypes(db: SQLite.SQLiteDatabase): Promise<MilkType[]> {
-  return db.getAllAsync<MilkType>('SELECT id, name FROM milk_types ORDER BY id');
+  return db.getAllAsync<MilkType>("SELECT id, name FROM milk_types ORDER BY id");
 }
 
 export async function loadSettings(db: SQLite.SQLiteDatabase): Promise<AppSettings> {
@@ -160,7 +160,7 @@ export async function loadSettings(db: SQLite.SQLiteDatabase): Promise<AppSettin
             notification_identifier, timezone, setup_completed
        FROM settings WHERE id = 1`,
   );
-  if (!row) throw new Error('Settings have not been initialized.');
+  if (!row) throw new Error("Settings have not been initialized.");
   return {
     arrivalHour: row.arrival_hour,
     arrivalMinute: row.arrival_minute,
@@ -198,14 +198,11 @@ export async function loadRules(db: SQLite.SQLiteDatabase): Promise<DeliveryRule
   return rows.map(toRule);
 }
 
-export async function saveRule(
-  db: SQLite.SQLiteDatabase,
-  rule: DeliveryRule,
-): Promise<void> {
+export async function saveRule(db: SQLite.SQLiteDatabase, rule: DeliveryRule): Promise<void> {
   validateMilkType(rule.milkTypeId);
   validateDate(rule.effectiveFrom);
-  validateNonNegativeInteger(rule.quantityMl, 'Quantity');
-  validateNonNegativeInteger(rule.pricePaisePerLitre, 'Price');
+  validateNonNegativeInteger(rule.quantityMl, "Quantity");
+  validateNonNegativeInteger(rule.pricePaisePerLitre, "Price");
   await db.runAsync(
     `INSERT INTO delivery_rules
        (milk_type_id, effective_from, quantity_ml, price_paise_per_litre, enabled)
@@ -222,10 +219,7 @@ export async function saveRule(
   );
 }
 
-export async function saveRules(
-  db: SQLite.SQLiteDatabase,
-  rules: DeliveryRule[],
-): Promise<void> {
+export async function saveRules(db: SQLite.SQLiteDatabase, rules: DeliveryRule[]): Promise<void> {
   await db.withExclusiveTransactionAsync(async (txn) => {
     for (const rule of rules) await saveRule(txn, rule);
   });
@@ -237,8 +231,8 @@ export async function saveOverride(
 ): Promise<void> {
   validateDate(override.date);
   validateMilkType(override.milkTypeId);
-  validateNonNegativeInteger(override.quantityMl, 'Quantity');
-  validateNonNegativeInteger(override.pricePaisePerLitre, 'Price');
+  validateNonNegativeInteger(override.quantityMl, "Quantity");
+  validateNonNegativeInteger(override.pricePaisePerLitre, "Price");
   await db.runAsync(
     `INSERT INTO delivery_overrides (date, milk_type_id, quantity_ml, price_paise_per_litre)
      VALUES (?, ?, ?, ?)
@@ -260,7 +254,7 @@ export async function clearOverride(
   validateDate(date);
   validateMilkType(milkTypeId);
   await db.runAsync(
-    'DELETE FROM delivery_overrides WHERE date = ? AND milk_type_id = ?',
+    "DELETE FROM delivery_overrides WHERE date = ? AND milk_type_id = ?",
     date,
     milkTypeId,
   );
@@ -299,20 +293,22 @@ export async function getDeliveryDay(
     date,
     date,
   );
-  const lines = rows.map((row): DailyDeliveryLine => ({
-    milkTypeId: row.milk_type_id,
-    milkTypeName: row.milk_type_name,
-    quantityMl: row.quantity_ml,
-    pricePaisePerLitre: row.price_paise_per_litre,
-    costPaise: calculateCostPaise(row.quantity_ml, row.price_paise_per_litre),
-    source: row.source,
-  }));
+  const lines = rows.map(
+    (row): DailyDeliveryLine => ({
+      milkTypeId: row.milk_type_id,
+      milkTypeName: row.milk_type_name,
+      quantityMl: row.quantity_ml,
+      pricePaisePerLitre: row.price_paise_per_litre,
+      costPaise: calculateCostPaise(row.quantity_ml, row.price_paise_per_litre),
+      source: row.source,
+    }),
+  );
   return {
     date,
     lines,
     totalQuantityMl: lines.reduce((sum, line) => sum + line.quantityMl, 0),
     totalCostPaise: lines.reduce((sum, line) => sum + line.costPaise, 0),
-    hasOverride: lines.some((line) => line.source === 'override'),
+    hasOverride: lines.some((line) => line.source === "override"),
   };
 }
 
@@ -320,15 +316,15 @@ export async function getDeliveryMonth(
   db: SQLite.SQLiteDatabase,
   month: string,
 ): Promise<MonthlyDelivery> {
-  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) throw new Error('Month must use YYYY-MM.');
-  const [year, monthNumber] = month.split('-').map(Number);
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) throw new Error("Month must use YYYY-MM.");
+  const [year, monthNumber] = month.split("-").map(Number);
   const dayCount = new Date(Date.UTC(year, monthNumber, 0)).getUTCDate();
   const days = await Promise.all(
     Array.from({ length: dayCount }, (_, index) =>
-      getDeliveryDay(db, `${month}-${String(index + 1).padStart(2, '0')}`),
+      getDeliveryDay(db, `${month}-${String(index + 1).padStart(2, "0")}`),
     ),
   );
-  const totals = new Map<MilkTypeId, MonthlyDelivery['totalsByMilkType'][number]>();
+  const totals = new Map<MilkTypeId, MonthlyDelivery["totalsByMilkType"][number]>();
   for (const day of days) {
     for (const line of day.lines) {
       const total = totals.get(line.milkTypeId) ?? {
@@ -366,24 +362,33 @@ function toRule(row: RuleRow): DeliveryRule {
 }
 
 function validateSettings(settings: AppSettings): void {
-  if (!Number.isInteger(settings.arrivalHour) || settings.arrivalHour < 0 || settings.arrivalHour > 23)
-    throw new Error('Arrival hour must be between 0 and 23.');
-  if (!Number.isInteger(settings.arrivalMinute) || settings.arrivalMinute < 0 || settings.arrivalMinute > 59)
-    throw new Error('Arrival minute must be between 0 and 59.');
-  if (!settings.timezone.trim()) throw new Error('Timezone is required.');
+  if (
+    !Number.isInteger(settings.arrivalHour) ||
+    settings.arrivalHour < 0 ||
+    settings.arrivalHour > 23
+  )
+    throw new Error("Arrival hour must be between 0 and 23.");
+  if (
+    !Number.isInteger(settings.arrivalMinute) ||
+    settings.arrivalMinute < 0 ||
+    settings.arrivalMinute > 59
+  )
+    throw new Error("Arrival minute must be between 0 and 59.");
+  if (!settings.timezone.trim()) throw new Error("Timezone is required.");
 }
 
 function validateMilkType(value: string): asserts value is MilkTypeId {
-  if (value !== 'cow' && value !== 'buffalo') throw new Error('Unknown milk type.');
+  if (value !== "cow" && value !== "buffalo") throw new Error("Unknown milk type.");
 }
 
 function validateNonNegativeInteger(value: number, label: string): void {
-  if (!Number.isSafeInteger(value) || value < 0) throw new Error(`${label} must be a non-negative integer.`);
+  if (!Number.isSafeInteger(value) || value < 0)
+    throw new Error(`${label} must be a non-negative integer.`);
 }
 
 function validateDate(value: string): void {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!match) throw new Error('Date must use YYYY-MM-DD.');
+  if (!match) throw new Error("Date must use YYYY-MM-DD.");
   const year = Number(match[1]);
   const month = Number(match[2]);
   const day = Number(match[3]);
@@ -392,5 +397,6 @@ function validateDate(value: string): void {
     parsed.getUTCFullYear() !== year ||
     parsed.getUTCMonth() !== month - 1 ||
     parsed.getUTCDate() !== day
-  ) throw new Error('Date is not a valid calendar day.');
+  )
+    throw new Error("Date is not a valid calendar day.");
 }

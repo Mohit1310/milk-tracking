@@ -43,14 +43,8 @@ export interface MilkTrackerViewProps {
   onSaveSetup: (input: PlanSaveInput) => void | Promise<void>;
   onSavePlan?: (input: PlanSaveInput) => void | Promise<void>;
   onSaveOverrides?: (input: DeliveryOverrideInput[]) => void | Promise<void>;
-  onMarkNoDelivery?: (
-    date: string,
-    milkTypeId: MilkTypeId,
-  ) => void | Promise<void>;
-  onClearOverride?: (
-    date: string,
-    milkTypeId: MilkTypeId,
-  ) => void | Promise<void>;
+  onMarkNoDelivery?: (date: string, milkTypeId: MilkTypeId) => void | Promise<void>;
+  onClearOverride?: (date: string, milkTypeId: MilkTypeId) => void | Promise<void>;
   onRequestNotifications?: () => void | Promise<void>;
   onOpenNotificationSettings?: () => void | Promise<void>;
 }

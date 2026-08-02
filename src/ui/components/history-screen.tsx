@@ -16,7 +16,9 @@ function formatMonth(month: string): string {
 function todayKey(): string {
   const date = new Date();
   return [date.getFullYear(), date.getMonth() + 1, date.getDate()]
-    .map((value, index) => (index === 0 ? String(value).padStart(4, "0") : String(value).padStart(2, "0")))
+    .map((value, index) =>
+      index === 0 ? String(value).padStart(4, "0") : String(value).padStart(2, "0"),
+    )
     .join("-");
 }
 
@@ -34,7 +36,10 @@ export function HistoryScreen({
   }, [month]);
 
   const summary = useMemo(() => {
-    const totals = new Map<MonthlyDelivery["totalsByMilkType"][number]["milkTypeId"], MonthlyDelivery["totalsByMilkType"][number]>();
+    const totals = new Map<
+      MonthlyDelivery["totalsByMilkType"][number]["milkTypeId"],
+      MonthlyDelivery["totalsByMilkType"][number]
+    >();
     for (const day of elapsedDays) {
       for (const line of day.lines) {
         const total = totals.get(line.milkTypeId) ?? {
@@ -56,50 +61,37 @@ export function HistoryScreen({
   }, [elapsedDays]);
 
   if (!month || elapsedDays.length === 0)
-    return (
-      <EmptyState message="Your monthly history will appear here once tracking starts." />
-    );
+    return <EmptyState message="Your monthly history will appear here once tracking starts." />;
   return (
     <View>
       <Text style={styles.eyebrow}>HISTORY</Text>
       <Text style={styles.heroTitle}>{formatMonth(month.month)}</Text>
       <View style={styles.summaryCard}>
-        <Text style={styles.summaryValue}>
-          {toRupees(summary.totalCostPaise)}
-        </Text>
+        <Text style={styles.summaryValue}>{toRupees(summary.totalCostPaise)}</Text>
         <Text style={styles.summaryMuted}>
           {toLitres(summary.totalQuantityMl)} delivered this month
         </Text>
         <View style={styles.summaryBreakdown}>
           {summary.totalsByMilkType.map((total) => (
             <View key={total.milkTypeId} style={styles.breakdownItem}>
-              <Text style={styles.breakdownValue}>
-                {toLitres(total.quantityMl)}
-              </Text>
+              <Text style={styles.breakdownValue}>{toLitres(total.quantityMl)}</Text>
               <Text style={styles.summaryMuted}>{total.milkTypeName}</Text>
             </View>
           ))}
         </View>
       </View>
-      <SectionTitle
-        title="Daily entries"
-        detail="Tap a day to correct the quantity or price."
-      />
+      <SectionTitle title="Daily entries" detail="Tap a day to correct the quantity or price." />
       {elapsedDays.map((day) => (
         <Pressable
           key={day.date}
           accessibilityRole="button"
           onPress={() => onEdit(day)}
-          style={({ pressed }) => [
-            styles.historyRow,
-            pressed && styles.pressed,
-          ]}
+          style={({ pressed }) => [styles.historyRow, pressed && styles.pressed]}
         >
           <View style={styles.flexText}>
             <Text style={styles.cardTitle}>{formatDate(day.date)}</Text>
             <Text style={styles.muted}>
-              {day.hasOverride ? "Edited" : "Automatic default"} ·{" "}
-              {toLitres(day.totalQuantityMl)}
+              {day.hasOverride ? "Edited" : "Automatic default"} · {toLitres(day.totalQuantityMl)}
             </Text>
           </View>
           <Text style={styles.lineCost}>{toRupees(day.totalCostPaise)}</Text>

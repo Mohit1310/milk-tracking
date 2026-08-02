@@ -28,12 +28,8 @@ export function MilkTrackerView({
   onOpenNotificationSettings,
 }: MilkTrackerViewProps) {
   const [editingDate, setEditingDate] = useState<string | null>(null);
-  const [drafts, setDrafts] = useState<PlanDraft[]>(() =>
-    defaultDrafts(milkTypes, rules),
-  );
-  const [arrivalTime, setArrivalTime] = useState(() =>
-    timeFromSettings(settings),
-  );
+  const [drafts, setDrafts] = useState<PlanDraft[]>(() => defaultDrafts(milkTypes, rules));
+  const [arrivalTime, setArrivalTime] = useState(() => timeFromSettings(settings));
   const [notificationsEnabled, setNotificationsEnabled] = useState(
     settings?.notificationsEnabled ?? true,
   );
@@ -51,15 +47,8 @@ export function MilkTrackerView({
     return month?.days.find((day) => day.date === editingDate) ?? null;
   }, [editingDate, month, today]);
 
-  const savePlan = async (
-    callback: (input: PlanSaveInput) => void | Promise<void>,
-  ) => {
-    const input = toPlanInput(
-      drafts,
-      arrivalTime,
-      notificationsEnabled,
-      timezone,
-    );
+  const savePlan = async (callback: (input: PlanSaveInput) => void | Promise<void>) => {
+    const input = toPlanInput(drafts, arrivalTime, notificationsEnabled, timezone);
     if (input) await callback(input);
   };
 
@@ -120,10 +109,7 @@ export function MilkTrackerView({
           }}
         />
       ) : (
-        <HistoryScreen
-          month={month}
-          onEdit={(delivery) => setEditingDate(delivery.date)}
-        />
+        <HistoryScreen month={month} onEdit={(delivery) => setEditingDate(delivery.date)} />
       )
     ) : (
       <SettingsScreen
@@ -143,10 +129,7 @@ export function MilkTrackerView({
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {screen}
       </ScrollView>
     </SafeAreaView>

@@ -17,9 +17,7 @@ export function DraftCard({
       <View style={styles.rowBetween}>
         <View>
           <Text style={styles.cardTitle}>{draft.name}</Text>
-          <Text style={styles.muted}>
-            {draft.enabled ? "Included every day" : "Not included"}
-          </Text>
+          <Text style={styles.muted}>{draft.enabled ? "Included every day" : "Not included"}</Text>
         </View>
         <Pressable
           accessibilityRole="switch"
@@ -28,9 +26,7 @@ export function DraftCard({
           onPress={() => onUpdate({ enabled: !draft.enabled })}
           style={[styles.switch, draft.enabled && styles.switchOn]}
         >
-          <Text
-            style={[styles.switchText, draft.enabled && styles.switchTextOn]}
-          >
+          <Text style={[styles.switchText, draft.enabled && styles.switchTextOn]}>
             {draft.enabled ? "ON" : "OFF"}
           </Text>
         </Pressable>
@@ -43,16 +39,10 @@ export function DraftCard({
             accessibilityRole="button"
             accessibilityState={{ selected: draft.quantityLitres === preset }}
             onPress={() => onUpdate({ quantityLitres: preset })}
-            style={[
-              styles.chip,
-              draft.quantityLitres === preset && styles.chipSelected,
-            ]}
+            style={[styles.chip, draft.quantityLitres === preset && styles.chipSelected]}
           >
             <Text
-              style={[
-                styles.chipText,
-                draft.quantityLitres === preset && styles.chipTextSelected,
-              ]}
+              style={[styles.chipText, draft.quantityLitres === preset && styles.chipTextSelected]}
             >
               {preset} L
             </Text>
@@ -65,11 +55,7 @@ export function DraftCard({
           placeholder="Custom"
           placeholderTextColor={colors.muted}
           style={styles.smallInput}
-          value={
-            quantityPresets.includes(draft.quantityLitres)
-              ? ""
-              : draft.quantityLitres
-          }
+          value={quantityPresets.includes(draft.quantityLitres) ? "" : draft.quantityLitres}
         />
       </View>
       <Text style={styles.fieldLabel}>Price per litre</Text>

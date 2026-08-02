@@ -1,16 +1,8 @@
 import { createContext, useContext, type PropsWithChildren } from "react";
 
 import { type MilkTypeId } from "@/data/milk-database";
-import {
-  localDateKey,
-  useMilkTracker,
-  type MilkTrackerSetup,
-} from "@/milk-tracker";
-import type {
-  DeliveryOverrideInput,
-  MilkTrackerViewProps,
-  PlanSaveInput,
-} from "@/ui";
+import { localDateKey, useMilkTracker, type MilkTrackerSetup } from "@/milk-tracker";
+import type { DeliveryOverrideInput, MilkTrackerViewProps, PlanSaveInput } from "@/ui";
 
 const TrackerContext = createContext<MilkTrackerViewProps | null>(null);
 
@@ -36,16 +28,12 @@ export function MilkTrackerProvider({ children }: PropsWithChildren) {
     await model.savePlan(toMilkTrackerSetup(input));
   };
 
-  const saveOverrides = async (
-    inputs: DeliveryOverrideInput[],
-  ): Promise<void> => {
+  const saveOverrides = async (inputs: DeliveryOverrideInput[]): Promise<void> => {
     await model.saveDayOverrides(inputs);
   };
 
-  const markNoDelivery = (
-    date: string,
-    milkTypeId: MilkTypeId,
-  ): Promise<void> => model.markNoDelivery(date, milkTypeId);
+  const markNoDelivery = (date: string, milkTypeId: MilkTypeId): Promise<void> =>
+    model.markNoDelivery(date, milkTypeId);
 
   const value: MilkTrackerViewProps = {
     settings: model.settings,
@@ -64,17 +52,13 @@ export function MilkTrackerProvider({ children }: PropsWithChildren) {
     onOpenNotificationSettings: model.openNotificationSettings,
   };
 
-  return (
-    <TrackerContext.Provider value={value}>{children}</TrackerContext.Provider>
-  );
+  return <TrackerContext.Provider value={value}>{children}</TrackerContext.Provider>;
 }
 
 export function useMilkTrackerContext(): MilkTrackerViewProps {
   const context = useContext(TrackerContext);
   if (!context) {
-    throw new Error(
-      "useMilkTrackerContext must be used inside MilkTrackerProvider.",
-    );
+    throw new Error("useMilkTrackerContext must be used inside MilkTrackerProvider.");
   }
   return context;
 }

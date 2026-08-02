@@ -26,11 +26,7 @@ export function Button({
         pressed && !disabled && styles.pressed,
       ]}
     >
-      <Text
-        style={[styles.buttonText, secondary && styles.buttonSecondaryText]}
-      >
-        {label}
-      </Text>
+      <Text style={[styles.buttonText, secondary && styles.buttonSecondaryText]}>{label}</Text>
     </Pressable>
   );
 }

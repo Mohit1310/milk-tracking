@@ -22,9 +22,7 @@ export function NotificationCard({
       <View style={styles.rowBetween}>
         <View style={styles.flexText}>
           <Text style={styles.cardTitle}>Daily notification</Text>
-          <Text style={styles.muted}>
-            Remind me when today's entry is ready.
-          </Text>
+          <Text style={styles.muted}>Remind me when today's entry is ready.</Text>
         </View>
         <Pressable
           accessibilityRole="switch"

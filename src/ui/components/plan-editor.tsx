@@ -43,9 +43,7 @@ export function PlanEditor({
 
   const updateDraft = (milkTypeId: MilkTypeId, patch: Partial<PlanDraft>) => {
     setDrafts((current) =>
-      current.map((draft) =>
-        draft.milkTypeId === milkTypeId ? { ...draft, ...patch } : draft,
-      ),
+      current.map((draft) => (draft.milkTypeId === milkTypeId ? { ...draft, ...patch } : draft)),
     );
   };
 
@@ -53,14 +51,10 @@ export function PlanEditor({
     const validTime = parseTime(arrivalTime);
     const hasPlan = drafts.some(
       (draft) =>
-        draft.enabled &&
-        Number(draft.quantityLitres) > 0 &&
-        Number(draft.priceRupees) >= 0,
+        draft.enabled && Number(draft.quantityLitres) > 0 && Number(draft.priceRupees) >= 0,
     );
     if (!validTime || !hasPlan) {
-      setError(
-        "Choose a valid time and enable at least one milk type with quantity and price.",
-      );
+      setError("Choose a valid time and enable at least one milk type with quantity and price.");
       return;
     }
     setError("");
@@ -74,10 +68,7 @@ export function PlanEditor({
 
   return (
     <View>
-      <SectionTitle
-        title="Daily plan"
-        detail="Set the defaults used for automatic entries."
-      />
+      <SectionTitle title="Daily plan" detail="Set the defaults used for automatic entries." />
       {drafts.map((draft) => (
         <DraftCard
           key={draft.milkTypeId}
@@ -101,9 +92,7 @@ export function PlanEditor({
         style={styles.inputBox}
         value={arrivalTime}
       />
-      <Text style={styles.helper}>
-        Use 24-hour format, for example 07:00 or 18:30.
-      </Text>
+      <Text style={styles.helper}>Use 24-hour format, for example 07:00 or 18:30.</Text>
 
       <NotificationCard
         enabled={notificationsEnabled}
@@ -123,9 +112,7 @@ export function PlanEditor({
         onPress={() => void submit()}
         disabled={saving}
       />
-      <Text style={styles.tinyNote}>
-        Timezone: {timezone || "device local time"}
-      </Text>
+      <Text style={styles.tinyNote}>Timezone: {timezone || "device local time"}</Text>
     </View>
   );
 }

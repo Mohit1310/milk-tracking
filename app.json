@@ -24,12 +24,7 @@
       "bundler": "metro",
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-router",
-      "expo-notifications",
-      "expo-sqlite",
-      "expo-status-bar"
-    ],
+    "plugins": ["expo-router", "expo-notifications", "expo-sqlite", "expo-status-bar"],
     "experiments": {
       "typedRoutes": true
     },

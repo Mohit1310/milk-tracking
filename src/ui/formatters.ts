@@ -1,8 +1,4 @@
-import type {
-  AppSettings,
-  DeliveryRule,
-  MilkType,
-} from "../data/milk-database";
+import type { AppSettings, DeliveryRule, MilkType } from "../data/milk-database";
 import type { PlanDraft, PlanSaveInput } from "@/ui/types";
 
 export const FALLBACK_TYPES: MilkType[] = [
@@ -31,9 +27,7 @@ export function formatDate(date: string): string {
   });
 }
 
-export function parseTime(
-  value: string,
-): { hour: number; minute: number } | null {
+export function parseTime(value: string): { hour: number; minute: number } | null {
   const match = /^(\d{1,2}):(\d{2})$/.exec(value.trim());
   if (!match) return null;
   const hour = Number(match[1]);
@@ -47,10 +41,7 @@ export function timeFromSettings(settings: AppSettings | null): string {
   return `${String(settings.arrivalHour).padStart(2, "0")}:${String(settings.arrivalMinute).padStart(2, "0")}`;
 }
 
-export function defaultDrafts(
-  types: MilkType[],
-  rules: DeliveryRule[],
-): PlanDraft[] {
+export function defaultDrafts(types: MilkType[], rules: DeliveryRule[]): PlanDraft[] {
   return types.map((type) => {
     const rule = rules.find((candidate) => candidate.milkTypeId === type.id);
     return {
@@ -76,12 +67,7 @@ export function toPlanInput(
     pricePaisePerLitre: Math.round(Number(draft.priceRupees) * 100),
     enabled: draft.enabled,
   }));
-  if (
-    !rules.some(
-      (rule) =>
-        rule.enabled && rule.quantityMl > 0 && rule.pricePaisePerLitre >= 0,
-    )
-  )
+  if (!rules.some((rule) => rule.enabled && rule.quantityMl > 0 && rule.pricePaisePerLitre >= 0))
     return null;
   return { arrivalTime, notificationsEnabled, timezone, rules };
 }
