@@ -14,10 +14,10 @@ export const editorStyles = StyleSheet.create({
   editLine: {
     borderTopColor: colors.line,
     borderTopWidth: 1,
-    marginTop: 16,
-    paddingTop: 15,
+    marginTop: 12,
+    paddingTop: 5,
   },
-  editInputs: { alignItems: "center", flexDirection: "row", marginTop: 9 },
+  editInputs: { alignItems: "center", flexDirection: "row", marginTop: 3 },
   editInput: {
     borderColor: colors.line,
     borderRadius: 10,

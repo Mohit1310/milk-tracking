@@ -81,10 +81,16 @@ export function DeliveryEditor({
       ),
     );
 
+  const extraRows = delivery.lines.filter((line) => !plannedIds.has(line.milkTypeId));
+
   const [values, setValues] = useState<Record<string, string>>(() =>
-    Object.fromEntries(plannedRows.map((row) => [row.milkTypeId, toLitresText(row.quantityMl)])),
+    Object.fromEntries(
+      [...plannedRows, ...extraRows].map((row) => [row.milkTypeId, toLitresText(row.quantityMl)]),
+    ),
   );
-  const [addedIds, setAddedIds] = useState<Set<MilkTypeId>>(() => new Set());
+  const [addedIds, setAddedIds] = useState<Set<MilkTypeId>>(
+    () => new Set(extraRows.map((row) => row.milkTypeId)),
+  );
   const [saving, setSaving] = useState(false);
 
   const addedRows = [...addedIds]
