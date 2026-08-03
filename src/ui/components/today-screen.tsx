@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 import type { DailyDelivery, DeliveryRule, MilkType } from "@/data/milk-database";
 import type { DeliveryOverrideInput } from "@/ui/types";
 import { formatDate, toLitres, toRupees } from "@/ui/formatters";
+import { greetingForHour } from "@/ui/greeting";
 import { styles } from "@/ui/styles";
 import { Button, EmptyState } from "@/ui/components/primitives";
 import { DeliveryEditor } from "@/ui/components/delivery-editor";
@@ -76,7 +77,7 @@ export function TodayScreen({
   return (
     <View>
       <Text style={styles.eyebrow}>TODAY</Text>
-      <Text style={styles.heroTitle}>Good morning.</Text>
+      <Text style={styles.heroTitle}>{greetingForHour(new Date().getHours())}</Text>
       <Text style={styles.heroBody}>
         Your usual delivery is ready to review. Change only what was different.
       </Text>
