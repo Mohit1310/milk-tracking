@@ -48,15 +48,25 @@ export const deliveryStyles = StyleSheet.create({
   },
   lineRow: {
     alignItems: "center",
-    borderBottomColor: colors.line,
-    borderBottomWidth: 1,
     flexDirection: "row",
     paddingBottom: 13,
+    paddingTop: 13,
+  },
+  lineFirst: {
     paddingTop: 2,
+  },
+  lineSeparator: {
+    borderBottomColor: colors.line,
+    borderBottomWidth: 1,
+  },
+  lineLast: {
+    paddingBottom: 0,
   },
   lineCost: { color: colors.ink, fontSize: 16, fontWeight: "800" },
   totalRow: {
     alignItems: "center",
+    borderTopColor: colors.line,
+    borderTopWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     paddingTop: 15,

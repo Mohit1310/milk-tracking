@@ -275,6 +275,23 @@ export async function runMilkDatabaseTests(): Promise<void> {
     "override source",
   );
 
+  await saveOverride(db, {
+    date: "2026-01-10",
+    milkTypeId: "cow",
+    quantityMl: 0,
+    pricePaisePerLitre: 7000,
+  });
+  const zeroDay = await getDeliveryDay(db, "2026-01-10");
+  assertEqual(zeroDay.lines.length, 1, "zero-quantity line is omitted");
+  assert(zeroDay.hasOverride, "zero-quantity override is still surfaced");
+  assertEqual(
+    zeroDay.lines.find((line) => line.milkTypeId === "cow"),
+    undefined,
+    "cow line is excluded from the day",
+  );
+  assertEqual(zeroDay.totalQuantityMl, 1000, "zero-quantity line does not add to total");
+  assertEqual(zeroDay.totalCostPaise, 9000, "zero-quantity line does not add to cost");
+
   await clearOverride(db, "2026-01-10", "cow");
   assertEqual(
     (await getDeliveryDay(db, "2026-01-10")).totalQuantityMl,

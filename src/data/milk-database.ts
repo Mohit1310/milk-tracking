@@ -293,7 +293,7 @@ export async function getDeliveryDay(
     date,
     date,
   );
-  const lines = rows.map(
+  const allLines = rows.map(
     (row): DailyDeliveryLine => ({
       milkTypeId: row.milk_type_id,
       milkTypeName: row.milk_type_name,
@@ -303,12 +303,13 @@ export async function getDeliveryDay(
       source: row.source,
     }),
   );
+  const lines = allLines.filter((line) => line.quantityMl > 0);
   return {
     date,
     lines,
     totalQuantityMl: lines.reduce((sum, line) => sum + line.quantityMl, 0),
     totalCostPaise: lines.reduce((sum, line) => sum + line.costPaise, 0),
-    hasOverride: lines.some((line) => line.source === "override"),
+    hasOverride: allLines.some((line) => line.source === "override"),
   };
 }
 
