@@ -154,6 +154,11 @@ export const coreStyles = StyleSheet.create({
   buttonDisabled: { opacity: 0.55 },
   buttonText: { color: "#FFFFFF", fontSize: 15, fontWeight: "800" },
   buttonSecondaryText: { color: colors.accent },
+  buttonRow: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  flex: { flex: 1 },
   pressed: { opacity: 0.75 },
   error: { color: colors.danger, fontSize: 13, lineHeight: 19, marginTop: 14 },
   closeText: { color: colors.accent, fontSize: 13, fontWeight: "800" },

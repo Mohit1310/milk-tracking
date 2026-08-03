@@ -149,14 +149,9 @@ export function DeliveryEditor({
 
   return (
     <View style={styles.editorCard}>
-      <View style={styles.rowBetween}>
-        <View>
-          <Text style={styles.cardTitle}>Edit {formatDate(delivery.date)}</Text>
-          <Text style={styles.muted}>Save only what actually arrived.</Text>
-        </View>
-        <Pressable accessibilityRole="button" accessibilityLabel="Close editor" onPress={onCancel}>
-          <Text style={styles.closeText}>Close</Text>
-        </Pressable>
+      <View>
+        <Text style={styles.cardTitle}>Edit {formatDate(delivery.date)}</Text>
+        <Text style={styles.muted}>Save only what actually arrived.</Text>
       </View>
       {rows.map((row) => {
         const noDelivery = isNoDelivery(row.milkTypeId);
@@ -207,11 +202,18 @@ export function DeliveryEditor({
           <Text style={styles.addTypeText}>+ Add {type.name}</Text>
         </Pressable>
       ))}
-      <Button
-        label={saving ? "Saving…" : "Save changes"}
-        onPress={() => void save()}
-        disabled={saving}
-      />
+      <View style={styles.buttonRow}>
+        <View style={styles.flex}>
+          <Button label="Cancel" onPress={onCancel} secondary />
+        </View>
+        <View style={styles.flex}>
+          <Button
+            label={saving ? "Saving…" : "Save changes"}
+            onPress={() => void save()}
+            disabled={saving}
+          />
+        </View>
+      </View>
     </View>
   );
 }
