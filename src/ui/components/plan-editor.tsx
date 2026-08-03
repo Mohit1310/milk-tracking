@@ -1,15 +1,15 @@
 import { useState, type Dispatch, type SetStateAction } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Text, View } from "react-native";
 
 import type { NotificationPermissionState } from "@/notifications";
 import type { MilkTypeId } from "@/data/milk-database";
 import type { PlanDraft } from "@/ui/types";
 import { parseTime } from "@/ui/formatters";
 import { styles } from "@/ui/styles";
-import { colors } from "@/ui/theme";
 import { Button, SectionTitle } from "@/ui/components/primitives";
 import { DraftCard } from "@/ui/components/draft-card";
 import { NotificationCard } from "@/ui/components/notification-card";
+import { TimePickerField } from "@/ui/components/time-picker-field";
 
 export function PlanEditor({
   drafts,
@@ -81,18 +81,8 @@ export function PlanEditor({
         title="Arrival time"
         detail="The daily reminder uses your device's local time."
       />
-      <TextInput
-        accessibilityLabel="Milk arrival time"
-        autoCapitalize="none"
-        keyboardType="numbers-and-punctuation"
-        maxLength={5}
-        onChangeText={setArrivalTime}
-        placeholder="07:00"
-        placeholderTextColor={colors.muted}
-        style={styles.inputBox}
-        value={arrivalTime}
-      />
-      <Text style={styles.helper}>Use 24-hour format, for example 07:00 or 18:30.</Text>
+      <TimePickerField value={arrivalTime} onChange={setArrivalTime} />
+      <Text style={styles.helper}>The reminder will fire at the selected time each day.</Text>
 
       <NotificationCard
         enabled={notificationsEnabled}
